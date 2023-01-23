@@ -1,10 +1,11 @@
+import 'package:chatapp/modules/baseView.dart';
 import 'package:chatapp/modules/create%20account/create_account_vm.dart';
+import 'package:chatapp/modules/home/HomeScreen.dart';
 import 'package:chatapp/shared/styles/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// import '../../shared/components/ui_utilities.dart';
+import 'connector.dart';
 
 class CreateScreen extends StatefulWidget {
   static const String routename = 'Create_account';
@@ -13,18 +14,28 @@ class CreateScreen extends StatefulWidget {
   State<CreateScreen> createState() => _CreateScreenState();
 }
 
-class _CreateScreenState extends State<CreateScreen> {
+class _CreateScreenState extends BaseView<CreateScreen, CreateAccountViewModel>
+    implements Connector {
   bool _isHidden = true;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-  CreateAccountViewModel createAccountViewModel = CreateAccountViewModel();
+  var firstNameController = TextEditingController();
+  var lastNameController = TextEditingController();
+  var userNameController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewmodel.myNavigator = this;
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (c) => createAccountViewModel,
+      create: (c) => viewmodel,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -50,8 +61,9 @@ class _CreateScreenState extends State<CreateScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
+                      controller: firstNameController,
                       validator: (text) {
-                        if (text != null && text.isEmpty) {
+                        if (text == null || text.isEmpty) {
                           return 'Please enter your first name';
                         }
                         return null;
@@ -67,8 +79,9 @@ class _CreateScreenState extends State<CreateScreen> {
                       height: 10,
                     ),
                     TextFormField(
+                      controller: lastNameController,
                       validator: (text) {
-                        if (text != null && text.isEmpty) {
+                        if (text == null || text.isEmpty) {
                           return 'Please enter your Last name';
                         }
                         return null;
@@ -84,8 +97,9 @@ class _CreateScreenState extends State<CreateScreen> {
                       height: 10,
                     ),
                     TextFormField(
+                      controller: userNameController,
                       validator: (text) {
-                        if (text != null && text.isEmpty) {
+                        if (text == null || text.isEmpty) {
                           return 'Please enter your User name';
                         }
                         return null;
@@ -103,13 +117,13 @@ class _CreateScreenState extends State<CreateScreen> {
                     TextFormField(
                       controller: emailController,
                       validator: (text) {
-                        if (text != null && text.isEmpty) {
+                        if (text == null || text.isEmpty) {
                           return 'Please enter your e-mail';
                         }
 
                         final bool emailValid = RegExp(
                                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                            .hasMatch(text!);
+                            .hasMatch(text);
                         if (!emailValid) {
                           return 'Please enter a valid e-mail';
                         }
@@ -130,7 +144,7 @@ class _CreateScreenState extends State<CreateScreen> {
                       controller: passwordController,
                       obscureText: _isHidden,
                       validator: (text) {
-                        if (text != null && text.isEmpty) {
+                        if (text == null || text.isEmpty) {
                           return 'Please enter your password';
                         }
                         return null;
@@ -188,8 +202,12 @@ class _CreateScreenState extends State<CreateScreen> {
 
   void createAccount() async {
     if (formKey.currentState!.validate()) {
-      createAccountViewModel.CreateAccount(
-          emailController.text, passwordController.text);
+      viewmodel.CreateAccount(
+          emailController.text,
+          passwordController.text,
+          firstNameController.text,
+          lastNameController.text,
+          userNameController.text);
     }
   }
 
@@ -197,5 +215,15 @@ class _CreateScreenState extends State<CreateScreen> {
     setState(() {
       _isHidden = !_isHidden;
     });
+  }
+
+  @override
+  void goToHome() {
+    Navigator.popAndPushNamed(context, HomeScreen.routename);
+  }
+
+  @override
+  CreateAccountViewModel initViewModel() {
+    return CreateAccountViewModel();
   }
 }

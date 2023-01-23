@@ -1,21 +1,32 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-//
-// import '../../../models/task.dart';
-//
-// CollectionReference<Task> getTasksCollections() {
-//   return FirebaseFirestore.instance.collection('tasks').withConverter<Task>(
-//       fromFirestore: ((snapshot, options) => Task.fromJson(snapshot.data()!)),
-//       toFirestore: (value, options) => value.toJson());
-// }
-//
-// Future<void> addTaskToFireStore(Task task) {
-//   // FirebaseFirestore.instance.collection('tasks').add(data);
-//   var collection = getTasksCollections();
-//   var documentref = collection.doc();
-//   task.id = documentref.id;
-//   return documentref.set(task);
-// }
-//
+import 'package:chatapp/models/myuser.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class DataBase_Utils {
+  static CollectionReference<myUser> getuserCollections() {
+    return FirebaseFirestore.instance.collection('Users').withConverter<myUser>(
+        fromFirestore: ((snapshot, options) =>
+            myUser.fromJson(snapshot.data()!)),
+        toFirestore: (value, options) => value.toJson());
+  }
+
+  static Future<void> adduserToFireStore(myUser newUser) {
+    var collection = getuserCollections();
+    var documentref = collection.doc();
+    newUser.id = documentref.id;
+    return documentref.set(newUser);
+  }
+static Future<myUser?> getDataFromFireStore(String id) async{
+    var userRef = await getuserCollections().doc(id).get();
+
+    return userRef.data();
+}
+  // Stream<QuerySnapshot<myUser>> getDataFromFireStore(String id) {
+  //   return getuserCollections()
+  //       .where('date', isEqualTo: date.microsecondsSinceEpoch)
+  //       .snapshots();
+  // }
+}
+
 // Stream<QuerySnapshot<Task>> getDataFromFireStore(DateTime date) {
 //   return getTasksCollections()
 //       .where('date', isEqualTo: date.microsecondsSinceEpoch)

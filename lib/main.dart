@@ -1,6 +1,7 @@
 import 'package:chatapp/modules/create%20account/create_account.dart';
+import 'package:chatapp/modules/home/HomeScreen.dart';
+import 'package:chatapp/modules/login/loginView.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main()async {
@@ -18,9 +19,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
-      initialRoute: CreateScreen.routename,
+      initialRoute: LoginScreen.routename,
       routes: {
+        LoginScreen.routename: (context) => LoginScreen(),
         CreateScreen.routename: (context) => CreateScreen(),
+        HomeScreen.routename: (context) => HomeScreen(),
+
       },
     );
   }
