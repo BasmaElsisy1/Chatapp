@@ -5,6 +5,8 @@ import 'package:chatapp/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/myuser.dart';
+import '../../providers/user_provider.dart';
 import 'connector.dart';
 
 class CreateScreen extends StatefulWidget {
@@ -218,7 +220,9 @@ class _CreateScreenState extends BaseView<CreateScreen, CreateAccountViewModel>
   }
 
   @override
-  void goToHome() {
+  void goToHome(myUser user) {
+    var provider = Provider.of<UserProvider>(context , listen: false);
+    provider.currentUserApp = user;
     Navigator.popAndPushNamed(context, HomeScreen.routename);
   }
 

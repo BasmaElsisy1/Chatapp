@@ -5,6 +5,7 @@ import 'package:chatapp/modules/login/loginNavigator.dart';
 import 'package:chatapp/modules/login/loginVM.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/user_provider.dart';
 import '../../shared/styles/colors.dart';
 import '../home/HomeScreen.dart';
 
@@ -194,6 +195,8 @@ class _LoginScreenState extends BaseView<LoginScreen, LoginVM>
 
   @override
   void goToHome(myUser Myuser) {
+    var provider = Provider.of<UserProvider>(context , listen: false);
+    provider.currentUserApp = Myuser;
     Navigator.popAndPushNamed(context, HomeScreen.routename);
   }
 }
